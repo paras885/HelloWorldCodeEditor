@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+    <head>
+
+        <title>HelloWorld Code Editor</title>    
+
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/theme/3024-night.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/theme/blackboard.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/theme/dracula.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/theme/eclipse.css">
+
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.css">
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/theme/3024-day.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/codemirror.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/addon/fold/indent-fold.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/addon/lint/json-lint.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/addon/dialog/dialog.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/mode/javascript/javascript.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/addon/dialog/dialog.css"></script>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/addon/selection/active-line.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.20.2/addon/edit/matchbrackets.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+        <style type="text/css">
+            .CodeMirror {
+                border: solid #eee;
+                height: 500px;
+                width: 700px;
+            }s
+        </style>
+    </head>
+    <body>
+        <textarea id="CodeEditor">
+        </textarea>
+        <br>
+        <p> Select a theme:  <select onchange="selectTheme()" id=select>
+            <option selected>default</option>
+            <option>3024-day</option>
+            <option>3024-night</option>
+            <option>blackboard</option>
+            <option>dracula</option>
+            <option>eclipse</option>
+            </select>
+        </p>
+         <p> Select a language:  <select onchange="selectLanguage()" id=select_Lan>
+            <option selected>default(C++)</option>
+            <option>C</option>
+            <option>Python</option>
+            <option>Java</option>
+            <option>Ruby</option>
+            </select>
+        </p>
+        <br>
+        <button onclick="submit_code();">Submit Code</button>
+        <br><br>
+        <h><strong>Stdin</strong></h><br>
+        <textarea id="InputEditor" style='  height: 10px;
+                                            width: 700px; 
+                                            border: solid #eee;  
+                                            direction:ltr;
+                                            display:block;
+                                            max-width:100%;
+                                            line-height:1.5;
+                                            padding:15px 15px 30px;
+                                            border-radius:3px;
+                                            border:1px solid #F7E98D;
+                                            font:13px Tahoma, cursive;
+                                            transition:box-shadow 0.5s ease;
+                                            box-shadow:0 4px 6px rgba(0,0,0,0.1);
+                                            font-smoothing:subpixel-antialiased;
+                                            background:linear-gradient(#F9EFAF, #F7E98D);
+                                            background:-o-linear-gradient(#F9EFAF, #F7E98D);
+                                            background:-ms-linear-gradient(#F9EFAF, #F7E98D);
+                                            background:-moz-linear-gradient(#F9EFAF, #F7E98D);
+                                            background:-webkit-linear-gradient(#F9EFAF, #F7E98D);''> 
+
+        </textarea>
+        <div id = "result"> </div>
+
+    </body>
+    <script>
+        var CodeEditor = CodeMirror.fromTextArea(document.getElementById("CodeEditor"), {
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true
+        });
+
+
+        var input = document.getElementById("select");
+        function selectTheme() {
+            var theme = input.options[input.selectedIndex].textContent;
+            CodeEditor.setOption("theme", theme);
+            location.hash = "#" + theme;
+        }
+        var choice = (location.hash && location.hash.slice(1)) ||
+               (document.location.search &&
+                decodeURIComponent(document.location.search.slice(1)));
+        if (choice) {
+            input.value = choice;
+            CodeEditor.setOption("theme", choice);
+        }
+        CodeMirror.on(window, "hashchange", function() {
+            var theme = location.hash.slice(1);
+            if (theme) { input.value = theme; selectTheme(); }
+        });
+
+        function submit_code() {
+            CodeEditor.save();
+            var code = document.getElementById("CodeEditor").value;
+            var input = document.getElementById("InputEditor").value;
+            var language_input = document.getElementById("select_Lan")
+            var language = language_input.options[language_input.selectedIndex].textContent;
+             $.ajax({
+                url: "/execute",
+                data: {code: code, input: input, language: language},
+                type: "POST", 
+                success: function(output) {
+                    var result_div = document.getElementById("result");
+
+                    innerHTML = "<p ><br><h><strong>Stdout:</strong></h><br><br>";
+                    for(var i = 0; i < output.length; ++i) {
+                        if(output[i] == '\n') innerHTML += '<br>';
+                        else innerHTML += output[i];
+                    }
+                    innerHTML += "</p>"
+                    result_div.innerHTML = innerHTML;
+                    $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+                } 
+            });
+        }
+
+        function selectLanguage() {
+            var language_input = document.getElementById("select_Lan")
+            var language = language_input.options[language_input.selectedIndex].textContent;
+            if(language == 'Java') {
+                CodeEditor.setValue("//For Java Main Class name must be HelloWorld\npublic class HelloWorld {\n    public static void main(String[] args) {\n          System.out.println(\"HelloWorld\");\n     }\n}");
+            } else {
+                CodeEditor.setValue("");
+            }
+        }
+
+    </script>
+</html>
