@@ -4,23 +4,19 @@
   "description": "HelloWorldCodeEditor",
   "main": "server.js",
   "dependencies": {
-    "express": "4.14.0"
+    "express": "^4.14.0"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paras885/HelloWorldCodeEditor.git"
   },
-  "keywords": [
-    "example",
-    "heroku"
-  ],
   "author": "Paras",
-  "license": " MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/paras885/HelloWorldCodeEditor/issues"
   },
