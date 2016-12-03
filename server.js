@@ -48,6 +48,8 @@ app.post('/execute', urlencodedParser, function(req, res){
 		    	console.log("The input was saved!");
 			}); 
 
+			console.log('sh execute_c_code.sh ' + file_name_suffix + ' ' + (input.length > 0 ? 'y' : 'n')
+
 			var execute_code = ch_pr.exec('sh execute_c_code.sh ' + file_name_suffix + ' ' + (input.length > 0 ? 'y' : 'n'), function(error, stdout, stderr) {
 			  if (error) {
 		         console.log(error.stack);
