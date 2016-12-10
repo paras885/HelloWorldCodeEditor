@@ -2,11 +2,11 @@
 
 if [ $1 == ".c" ]
 	then
-		cmd="g++ hello.c"
+		cmd="g++ $3/hello.c"
 		eval "$cmd"
 		if [ $2 == 'y' ]
 			then
-				cmd="./a.out < input.txt"
+				cmd="./a.out < $3/input.txt"
 				eval "$cmd"
 		else
 			cmd="./a.out"
@@ -14,11 +14,11 @@ if [ $1 == ".c" ]
 		fi
 elif [ $1 == ".cpp" ]
 	then
-		cmd="g++ hello.cpp"
+		cmd="g++ $3/hello.cpp"
 		eval "$cmd"
 		if [ $2 == 'y' ]
 			then
-				cmd="./a.out < input.txt"
+				cmd="./a.out < $3/input.txt"
 				eval "$cmd"
 		else
 			cmd="./a.out"
@@ -28,32 +28,32 @@ elif [ $1 == ".py" ]
 	then
 		if [ $2 == 'y' ]
 			then 
-				cmd="python hello.py < input.txt"
+				cmd="python $3/hello.py < $3/input.txt"
 				eval "$cmd"
 		else
-			cmd="python hello.py"
+			cmd="python $3/hello.py"
 			eval "$cmd"
 		fi
 elif [ $1 == ".rb" ] 
 	then
 		if [ $2 == 'y' ]
 			then
-				cmd="ruby hello.rb < input.txt"
+				cmd="ruby $3/hello.rb < $3/input.txt"
 				eval "$cmd"
 		else
-			cmd="ruby hello.rb"
+			cmd="ruby $3/hello.rb"
 			eval "$cmd"
 		fi	
 elif [ $1 == ".java" ]
 	 then
-	 	cmd="javac HelloWorld.java"
+	 	cmd="javac $3/HelloWorld.java"
 	 	eval "$cmd"
 	 	if [ $2 == "y" ]
 	 		then
-	 			cmd="java HelloWorld < input.txt"
+	 			cmd="java $3/HelloWorld < $3/input.txt"
 	 			eval "$cmd"
 	 	else
-	 		cmd="java HelloWorld"
+	 		cmd="java $3/HelloWorld"
 	 		eval "$cmd"
 	 	fi
 fi
